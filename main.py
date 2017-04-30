@@ -5,11 +5,14 @@ import csv
 import numpy as np
 
 from model_np import *
+from plot import *
+
+from sklearn.decomposition import PCA
 
 def load_csv(path):
     csv_file = open(path, 'rb')
     csv_reader = csv.reader(csv_file, delimiter=',')
-    datas = np.array([data for data in csv_reader])
+    datas = np.array([data for data in csv_reader]).astype(np.float32)
     return datas
 
 def get_model(args):
@@ -57,7 +60,29 @@ def main(args):
         logging.info('Evaluating')
         acc = model.eval(X_Test, T_Test)
         logging.info('Evaluting accuracy = %f' % acc)
+    elif args.task == 'plot':
+        X_Train = load_csv(args.train_X)
+        T_Train = load_csv(args.train_T).flatten()
+        X_Test = load_csv(args.test_X)
+        T_Test = load_csv(args.test_T).flatten()
 
+        model.load('%s-model' % args.model)
+        logging.info('Model loaded from %s-model' % args.model)
+        logging.info('Plotting')
+          
+        pca = PCA(n_components=2)
+        pca.fit(X_Train)
+
+        X_Support = model.get_support_vectors()     
+        X_Support_pca = pca.transform(X_Support)
+ 
+        def predict(x):
+            x_inv = pca.inverse_transform(x)
+            return model.test(x_inv)
+
+        Y_Support = predict(X_Support_pca)
+        plot_decision_boundary(predict, X_Support_pca, Y_Support, 0.05) 
+         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--train_X', help='training data X', type=str)
@@ -65,7 +90,7 @@ if __name__ == '__main__':
     parser.add_argument('--test_X', help='testing data X', type=str)
     parser.add_argument('--test_T', help='testing data T', type=str)
 
-    parser.add_argument('--task', help='task type', type=str, choices=['validate', 'train', 'eval'], default='validate')
+    parser.add_argument('--task', help='task type', type=str, choices=['validate', 'train', 'eval', 'plot'], default='validate')
     parser.add_argument('--model', help='model type', type=str, choices=['c-svm', 'nu-svm'], default='c-svm')
     parser.add_argument('--kernel', help='kernel type', type=str,  choices=['linear', 'poly', 'rbf'], default='linear')
     parser.add_argument('--deg', help='degree', type=int, default=1)

@@ -27,6 +27,9 @@ class SVM(object):
         t = T.astype(np.int32)
         return float(np.equal(y, t).sum()) / len(t)
 
+    def get_support_vectors(self):
+        return self.model.support_vectors_
+
 class CSVM(SVM):
     def validate(self, X, T, kernel, deg, params, fold=3):
         svc = svm.SVC(kernel=kernel, degree=deg)
@@ -44,7 +47,7 @@ class CSVM(SVM):
 
 class NuSVM(SVM):
     def validate(self, X, T, kernel, deg, params, fold=3):
-        svc = svm.NuSVC(kernel=kernel, degree=deg)
+        svc = svm.NuSVC(kernel=kernel, degree=deg, gamma=100.0)
        
         for nu in params:
             svc.nu = nu
