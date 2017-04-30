@@ -19,7 +19,7 @@ Best error rate of each model
 # Visualization (Decision boundary)
 |C-SVM   |  𝛎-SVM |
 | ------------- |:------------:|
-|![csvm](/doc/bound_gen.png)|![nuvm](/doc/bound_dis_lda.png)|
+|![csvm](/doc/C_SVM.png)|![nusvm](/doc/nu_SVM.png)|
 
 # To train the model (examples)
 Training scripts use default training data in data/class*.npy and default training hyperparameters. If you want to use your own data, please see the manual of main.py
