@@ -17,29 +17,53 @@ Best error rate of each model
 |0.0224   |  0.0288 |
 
 # Visualization (Decision boundary)
+Circles mean the supporting vectors; stars mean outliers. 
+
 |C-SVM   |  𝛎-SVM |
 | ------------- |:------------:|
 |![csvm](/doc/C_SVM.png)|![nusvm](/doc/nu_SVM.png)|
 
-# To train the model (examples)
-Training scripts use default training data in data/class*.npy and default training hyperparameters. If you want to use your own data, please see the manual of main.py
+# Usage
 ```
-./train_generative.sh {model output path}
-./train_dicriminative.sh {model output path}
-./train_dicriminative_lda.sh {model output path}
+usage: main.py [-h] [--train_X TRAIN_X] [--train_T TRAIN_T] [--test_X TEST_X]
+               [--test_T TEST_T] [--task {validate,train,eval,plot}]
+               [--model {c-svm,nu-svm}] [--kernel {linear,poly,rbf}]
+               [--deg DEG] [--c C] [--min_c MIN_C] [--max_c MAX_C]
+               [--step_c STEP_C] [--nu NU] [--min_nu MIN_NU] [--max_nu MAX_NU]
+               [--step_nu STEP_NU]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --train_X TRAIN_X     training data X
+  --train_T TRAIN_T     training data T
+  --test_X TEST_X       testing data X
+  --test_T TEST_T       testing data T
+  --task {validate,train,eval,plot}
+                        task type
+  --model {c-svm,nu-svm}
+                        model type
+  --kernel {linear,poly,rbf}
+                        kernel type
+  --deg DEG             degree
+  --c C                 c
+  --min_c MIN_C         min_c
+  --max_c MAX_C         max_c
+  --step_c STEP_C       step_c
+  --nu NU               nu
+  --min_nu MIN_NU       min_nu
+  --max_nu MAX_NU       max_nu
+  --step_nu STEP_NU     step_nu
 ```
 
-# To validate the model (examples)
+## To train the model for example
 ```
-./validate_generative.sh
-./validate_dicriminative.sh 
-./validate_dicriminative_lda.sh 
+python main.py --task train --model nu-svm --kernel linear --nu 0.5 --train_X data/X_train.csv --train_T data/T_train.csv --test_X data/X_test.csv --test_T data/T_test.csv
 ```
-
-# To test the model (examples)
+## To evaluate the model for example
 ```
-./test.sh {model input} {result output} {testing data} {model type [dis|gen]}
-
-e.g.
-./test.sh model/model-dis data/class1.npy,data/class2.npy,data/class3.npy dis
+python main.py --task eval --model nu-svm --train_X data/X_train.csv --train_T data/T_train.csv --test_X data/X_test.csv --test_T data/T_test.csv
+```
+## To plot the model for example
+```
+python main.py --task plot --model nu-svm --train_X data/X_train.csv --train_T data/T_train.csv --test_X data/X_test.csv --test_T data/T_test.csv
 ```
