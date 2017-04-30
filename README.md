@@ -1,28 +1,25 @@
 # Introduction
-This project is implementation of **Probabilistic Generative Model** and **Probabilistic Discriminative Model** for multi-class classification. (*see Pattern Recognition and Machine Learning, Bishop 2006*)
-Classifcation task can be splitted into two stages - inference and decision.  Probabilistic Generative Model solve class posteriror via solving class conditional probabilities and class priors. 
-Probabilistic Discriminative Model solve directly optimize linear combination weight with **Iterative Reweighted Least Squares (IRLS) - Newton-Raphson** to find class posteriror.  All datas are processed with **Principle Component Analysis (PCA)** or **Linear Discriminant Analysis (LDA)**.
+This project is implementation of **C-SVM** and **𝛎-SVM** for multi-class classification. (*see Pattern Recognition and Machine Learning, Bishop 2006*) All datas are processed with **Principle Component Analysis (PCA)** before visualization.
 
 # Dependencies
 - numpy v1.12
-- tqdm
-- OpenCV
+- sklearn
 
 # Dataset
-Database of Faces ( AT&T Laboratories Cambridge)    
-Reference : http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html
+The MNIST database of handwritten digits  
+Reference : http://yann.lecun.com/exdb/mnist/
 
 # Results
 Best error rate of each model
 
-|Probabilistic Generative Model   |  Probabilistic Discriminative Model |
+|C-SVM   |  𝛎-SVM |
 |:-:|:-:|
-|0.025   |  0.0 |
+|0.0224   |  0.0288 |
 
 # Visualization (Decision boundary)
-|Probabilistic Generative Model   |  Probabilistic Discriminative Model |
+|C-SVM   |  𝛎-SVM |
 | ------------- |:------------:|
-|![gen](/doc/bound_gen.png)|![dis](/doc/bound_dis_lda.png)|
+|![csvm](/doc/bound_gen.png)|![nuvm](/doc/bound_dis_lda.png)|
 
 # To train the model (examples)
 Training scripts use default training data in data/class*.npy and default training hyperparameters. If you want to use your own data, please see the manual of main.py
