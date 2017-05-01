@@ -16,13 +16,6 @@ Best error rate of each model
 |:-:|:-:|
 |0.0224   |  0.0288 |
 
-# Visualization (Decision boundary)
-Circles mean the supporting vectors; stars mean outliers. 
-
-|C-SVM   |  𝛎-SVM |
-| ------------- |:------------:|
-|![csvm](/doc/C_SVM.png)|![nusvm](/doc/nu_SVM.png)|
-
 # Usage
 ```
 usage: main.py [-h] [--train_X TRAIN_X] [--train_T TRAIN_T] [--test_X TEST_X]
