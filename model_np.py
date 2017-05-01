@@ -37,7 +37,10 @@ class CSVM(SVM):
         for C in params:
             svc.C = C
             score = np.mean(cross_val_score(svc, X, T, n_jobs=8))
-            logging.info('C = %d; Accuracy = %f' % (C, score))
+            training_error_rate = 1.0 - svc.fit(X, T).score(X, T)
+            n_outliers = float(len(X)) * training_error_rate
+            logging.info('C = %f; Accuracy = %f, # SV = %d, # Outlier = %d' % (C, score, svc.n_support_.sum(), n_outliers))
+            #print('%f,%f,%d,%d' % (C, score, svc.n_support_.sum(), n_outliers))
 
     def train(self, X, T, kernel, deg, param):
         svc = svm.SVC(C=param, kernel=kernel, degree=deg)
@@ -47,12 +50,16 @@ class CSVM(SVM):
 
 class NuSVM(SVM):
     def validate(self, X, T, kernel, deg, params, fold=3):
-        svc = svm.NuSVC(kernel=kernel, degree=deg, gamma=100.0)
+        svc = svm.NuSVC(kernel=kernel, degree=deg)
        
         for nu in params:
             svc.nu = nu
             score = np.mean(cross_val_score(svc, X, T, n_jobs=8))
-            logging.info('Nu = %f; Accuracy = %f' % (nu, score))
+            training_error_rate = 1.0 - svc.fit(X, T).score(X, T)
+            n_outliers = float(len(X)) * training_error_rate
+            logging.info('NU = %f; Accuracy = %f, # SV = %d, # Outlier = %d' % (nu, score, svc.n_support_.sum(), n_outliers))
+            #print('%f,%f,%d,%d' % (nu, score, svc.n_support_.sum(), n_outliers))
+
 
     def train(self, X, T, kernel, deg, param):
         svc = svm.NuSVC(nu=param, kernel=kernel, degree=deg)

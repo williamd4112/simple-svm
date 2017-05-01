@@ -50,8 +50,8 @@ def main(args):
         T_Train = load_csv(args.train_T).flatten()
         logging.info('Training')
         model.train(X_Train, T_Train, kernel=get_kernel(args), deg=args.deg, param=get_param(args))
-        model.save('%s-model' % args.model)
-        logging.info('Model saved at %s-model' % args.model)
+        model.save('%s' % args.save)
+        logging.info('Model saved at %s' % args.save)
     elif args.task == 'eval':
         X_Test = load_csv(args.test_X)
         T_Test = load_csv(args.test_T).flatten()
@@ -66,8 +66,8 @@ def main(args):
         X_Test = load_csv(args.test_X)
         T_Test = load_csv(args.test_T).flatten()
 
-        model.load('%s-model' % args.model)
-        logging.info('Model loaded from %s-model' % args.model)
+        model.load(args.load)
+        logging.info('Model loaded from %s' % args.load)
         logging.info('Plotting')
 
         pca = PCA(n_components=2)
@@ -78,8 +78,8 @@ def main(args):
 
         def get_outlier():
             y_ = model.test(X_Train)
-            t_outlier = T_Train[model.test(X_Train) != T_Train]
-            x_outlier = X_Train[model.test(X_Train) != T_Train]
+            t_outlier = T_Train[y_ != T_Train]
+            x_outlier = X_Train[y_ != T_Train]
             return x_outlier,t_outlier
 
         def predict(x):
@@ -89,8 +89,10 @@ def main(args):
         X_Outlier, T_Outlier = get_outlier()
         X_Outlier_pca = pca.transform(X_Outlier)
 
-        Y_Support = predict(X_Support_pca)
-        plot_decision_boundary(predict, X_Support_pca, Y_Support, X_Outlier_pca, T_Outlier, 0.05)
+        T_Support = T_Train[model.model.support_]
+        #Y_Support = predict(X_Support_pca)
+        X_Train_pca = pca.transform(X_Train)
+        plot_decision_boundary(predict, X_Support_pca, T_Support, X_Outlier_pca, T_Outlier, X_Train_pca, T_Train, 0.1)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -98,6 +100,9 @@ if __name__ == '__main__':
     parser.add_argument('--train_T', help='training data T', type=str)
     parser.add_argument('--test_X', help='testing data X', type=str)
     parser.add_argument('--test_T', help='testing data T', type=str)
+
+    parser.add_argument('--load', help='model load from', type=str)
+    parser.add_argument('--save', help='model save to', type=str)
 
     parser.add_argument('--task', help='task type', type=str, choices=['validate', 'train', 'eval', 'plot'], default='validate')
     parser.add_argument('--model', help='model type', type=str, choices=['c-svm', 'nu-svm'], default='c-svm')
