@@ -38,7 +38,7 @@ def get_kernel(args):
     logging.info('Kernel = %s, Degree = %d' % (args.kernel, args.deg))
     return args.kernel
 
-def main(args):    
+def main(args):
     model = get_model(args)
     if args.task == 'validate':
         X_Train = load_csv(args.train_X)
@@ -69,20 +69,29 @@ def main(args):
         model.load('%s-model' % args.model)
         logging.info('Model loaded from %s-model' % args.model)
         logging.info('Plotting')
-          
+
         pca = PCA(n_components=2)
         pca.fit(X_Train)
 
-        X_Support = model.get_support_vectors()     
+        X_Support = model.get_support_vectors()
         X_Support_pca = pca.transform(X_Support)
- 
+
+        def get_outlier():
+            y_ = model.test(X_Train)
+            t_outlier = T_Train[model.test(X_Train) != T_Train]
+            x_outlier = X_Train[model.test(X_Train) != T_Train]
+            return x_outlier,t_outlier
+
         def predict(x):
             x_inv = pca.inverse_transform(x)
             return model.test(x_inv)
 
+        X_Outlier, T_Outlier = get_outlier()
+        X_Outlier_pca = pca.transform(X_Outlier)
+
         Y_Support = predict(X_Support_pca)
-        plot_decision_boundary(predict, X_Support_pca, Y_Support, 0.05) 
-         
+        plot_decision_boundary(predict, X_Support_pca, Y_Support, X_Outlier_pca, T_Outlier, 0.05)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--train_X', help='training data X', type=str)
@@ -107,5 +116,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     logging.basicConfig(format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
- 
+
     main(args)
