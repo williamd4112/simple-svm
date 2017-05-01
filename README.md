@@ -19,11 +19,11 @@ Best error rate of each model
 # Usage
 ```
 usage: main.py [-h] [--train_X TRAIN_X] [--train_T TRAIN_T] [--test_X TEST_X]
-               [--test_T TEST_T] [--task {validate,train,eval,plot}]
-               [--model {c-svm,nu-svm}] [--kernel {linear,poly,rbf}]
-               [--deg DEG] [--c C] [--min_c MIN_C] [--max_c MAX_C]
-               [--step_c STEP_C] [--nu NU] [--min_nu MIN_NU] [--max_nu MAX_NU]
-               [--step_nu STEP_NU]
+               [--test_T TEST_T] [--load LOAD] [--save SAVE]
+               [--task {validate,train,eval,plot}] [--model {c-svm,nu-svm}]
+               [--kernel {linear,poly,rbf}] [--deg DEG] [--c C]
+               [--min_c MIN_C] [--max_c MAX_C] [--step_c STEP_C] [--nu NU]
+               [--min_nu MIN_NU] [--max_nu MAX_NU] [--step_nu STEP_NU]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -31,6 +31,8 @@ optional arguments:
   --train_T TRAIN_T     training data T
   --test_X TEST_X       testing data X
   --test_T TEST_T       testing data T
+  --load LOAD           model load from
+  --save SAVE           model save to
   --task {validate,train,eval,plot}
                         task type
   --model {c-svm,nu-svm}
@@ -46,17 +48,14 @@ optional arguments:
   --min_nu MIN_NU       min_nu
   --max_nu MAX_NU       max_nu
   --step_nu STEP_NU     step_nu
+
 ```
 
 ## To train the model for example
 ```
-python main.py --task train --model nu-svm --kernel linear --nu 0.5 --train_X data/X_train.csv --train_T data/T_train.csv --test_X data/X_test.csv --test_T data/T_test.csv
+python main.py --task train --save {model save path} --model nu-svm --kernel linear --nu 0.5 --train_X data/X_train.csv --train_T data/T_train.csv
 ```
 ## To evaluate the model for example
 ```
-python main.py --task eval --model nu-svm --train_X data/X_train.csv --train_T data/T_train.csv --test_X data/X_test.csv --test_T data/T_test.csv
-```
-## To plot the model for example
-```
-python main.py --task plot --model nu-svm --train_X data/X_train.csv --train_T data/T_train.csv --test_X data/X_test.csv --test_T data/T_test.csv
+python main.py --task eval --model nu-svm --test_X data/X_test.csv --test_T data/T_test.csv --min_nu 0.01 --max_nu 0.3 --step_nu 0.01
 ```
